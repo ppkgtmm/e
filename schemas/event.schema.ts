@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { Recurrence, RecurrenceSchema } from './recurrence.schema';
 
 export type EventDocument = Event & Document;
 
@@ -19,6 +20,9 @@ export class Event {
 
   @Prop({ required: true, min: 0, max: 59 })
   end_minute: number;
+
+  @Prop({ type: RecurrenceSchema })
+  recurrence: Recurrence;
 }
 
 export const EventSchema = SchemaFactory.createForClass(Event);
