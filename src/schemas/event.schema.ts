@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { Interval } from '../shared/enums';
 
 export type EventDocument = Event & Document;
 
@@ -7,6 +8,9 @@ export type EventDocument = Event & Document;
 export class Event {
   @Prop({ required: true, min: 1, max: 31 })
   date: number;
+
+  @Prop({ required: true })
+  day: string;
 
   @Prop({ required: true, min: 1, max: 12 })
   month: number;
@@ -30,7 +34,7 @@ export class Event {
   notes: string;
 
   @Prop({ default: null })
-  repeat_interval: string;
+  repeat_interval: Interval;
 }
 
 export const EventSchema = SchemaFactory.createForClass(Event);

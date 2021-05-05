@@ -7,6 +7,7 @@ import {
   Max,
   Min,
 } from 'class-validator';
+import { MINYEAR } from '../constants';
 import { Interval } from '../enums';
 
 const intervals = Object.values(Interval).join(', ');
@@ -24,7 +25,7 @@ export class EventDTO {
   @IsNotEmpty()
   month: number;
 
-  @Min(0)
+  @Min(MINYEAR)
   @IsInt()
   @IsNotEmpty()
   year: number;
