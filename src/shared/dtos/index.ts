@@ -1,5 +1,5 @@
+import { Transform } from 'class-transformer';
 import {
-  IsDateString,
   IsEnum,
   IsInt,
   IsNotEmpty,
@@ -12,9 +12,22 @@ import { Interval } from '../enums';
 const intervals = Object.values(Interval).join(', ');
 
 export class EventDTO {
-  @IsDateString()
+  @Max(31)
+  @Min(1)
+  @IsInt()
   @IsNotEmpty()
-  date: string;
+  date: number;
+
+  @Max(12)
+  @Min(1)
+  @IsInt()
+  @IsNotEmpty()
+  month: number;
+
+  @Min(0)
+  @IsInt()
+  @IsNotEmpty()
+  year: number;
 
   @Max(23)
   @Min(0)
@@ -39,6 +52,10 @@ export class EventDTO {
   @IsInt()
   @IsNotEmpty()
   end_minute: number;
+
+  @IsNotEmpty()
+  @Transform(({ value }) => value?.trim())
+  notes: string;
 
   @IsEnum(Interval, {
     message: `repeat interval should be one of ${intervals}`,

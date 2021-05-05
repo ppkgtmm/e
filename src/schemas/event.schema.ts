@@ -5,8 +5,14 @@ export type EventDocument = Event & Document;
 
 @Schema()
 export class Event {
-  @Prop({ required: true })
-  date: Date;
+  @Prop({ required: true, min: 1, max: 31 })
+  date: number;
+
+  @Prop({ required: true, min: 1, max: 12 })
+  month: number;
+
+  @Prop({ required: true, min: 0 })
+  year: number;
 
   @Prop({ required: true, min: 0, max: 23 })
   start_hour: number;
@@ -19,6 +25,9 @@ export class Event {
 
   @Prop({ required: true, min: 0, max: 59 })
   end_minute: number;
+
+  @Prop({ required: true })
+  notes: string;
 
   @Prop({ default: null })
   repeat_interval: string;
