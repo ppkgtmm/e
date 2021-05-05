@@ -1,4 +1,7 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Post } from '@nestjs/common';
 
 @Controller('event')
-export class EventController {}
+export class EventController {
+  @Post()
+  async addEvent() {}
+}
