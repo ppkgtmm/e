@@ -1,5 +1,4 @@
 import { BadRequestException } from '@nestjs/common';
-import { days } from '../constants';
 
 export function getMonthDays(isLeap: boolean, month: number) {
   const monthDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
@@ -22,8 +21,4 @@ export function badRequestExceptionThrower(
     throw new BadRequestException({
       message,
     });
-}
-export function getDay(year: number, month: number, date: number) {
-  const dayNumber = new Date(`${year}-${month}-${date}`).getDay();
-  return days[dayNumber];
 }

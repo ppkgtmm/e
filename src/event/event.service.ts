@@ -3,7 +3,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import {
   badRequestExceptionThrower,
-  getDay,
   getMonthDays,
   isLeapYear,
 } from 'src/shared/functions';
@@ -17,11 +16,35 @@ export class EventService {
     private readonly eventModel: Model<EventDocument>,
   ) {}
 
+  getPackedDate(event: EventDTO) {
+    const timeStamp = new Date(event.year, event.month, event.date);
+    timeStamp.setHours(0, 0);
+    return timeStamp;
+  }
+  validateMonthDate(event: EventDTO) {
+    const { date, month, year } = event;
+    const maxDate = getMonthDays(isLeapYear(year), month);
+    badRequestExceptionThrower(
+      date > maxDate,
+      `Invalid date for month ${month}`,
+    );
+  }
+  validateEventTimeOrder(event: EventDTO) {
+    const { start_hour, start_minute, end_hour, end_minute } = event;
+    badRequestExceptionThrower(
+      start_hour > end_hour ||
+        (start_hour === end_hour && start_minute >= end_minute),
+      'Event ending time must be after starting time',
+    );
+  }
+
+  validateInput(event: EventDTO) {
+    this.validateMonthDate(event);
+    this.validateEventTimeOrder(event);
+  }
   async createEvent(event: EventDTO) {
+    this.validateInput(event);
     const {
-      date,
-      month,
-      year,
       start_hour,
       start_minute,
       end_hour,
@@ -29,22 +52,9 @@ export class EventService {
       notes,
       repeat_interval,
     } = event;
-    const maxDate = getMonthDays(isLeapYear(year), month);
-    badRequestExceptionThrower(
-      date > maxDate,
-      `Invalid date for month ${month}`,
-    );
-    badRequestExceptionThrower(
-      start_hour > end_hour ||
-        (start_hour === end_hour && start_minute >= end_minute),
-      'Event ending time must be after starting time',
-    );
-
+    const timeStamp = this.getPackedDate(event);
     const newEvent = new this.eventModel({
-      date,
-      month,
-      year,
-      day: getDay(year, month, date),
+      date: timeStamp,
       start_hour,
       end_hour,
       start_minute,
@@ -52,12 +62,6 @@ export class EventService {
       notes,
       repeat_interval,
     });
+    return await newEvent.save();
   }
 }
-
-// const now = new Date();
-// const currentDate = now.getDate();
-// const currentMonth = now.getMonth() + 1; // month 0 - 11
-// const currentYear = now.getFullYear();
-// const currentminute = now.getMinutes();
-// const currentHour = now.getHours();
