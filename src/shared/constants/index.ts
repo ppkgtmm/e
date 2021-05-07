@@ -1,1 +1,1 @@
-export const MINYEAR = 2000;
+export const MINYEAR = new Date().getFullYear();

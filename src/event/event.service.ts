@@ -17,8 +17,9 @@ export class EventService {
   ) {}
 
   getPackedDate(event: EventDTO) {
-    const timeStamp = new Date(event.year, event.month, event.date);
-    timeStamp.setHours(0, 0);
+    const timeStamp = new Date(
+      `${event.year}-${event.month}-${event.date} GMT+7:00`,
+    );
     return timeStamp;
   }
   validateMonthDate(event: EventDTO) {
@@ -54,7 +55,10 @@ export class EventService {
     } = event;
     const timeStamp = this.getPackedDate(event);
     const newEvent = new this.eventModel({
-      date: timeStamp,
+      date: timeStamp.getDate(),
+      month: timeStamp.getMonth() + 1,
+      year: timeStamp.getFullYear(),
+      day: timeStamp.getDay(),
       start_hour,
       end_hour,
       start_minute,

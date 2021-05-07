@@ -1,13 +1,23 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { MINYEAR } from '../shared/constants';
 import { Interval } from '../shared/enums';
 
 export type EventDocument = Event & Document;
 
 @Schema()
 export class Event {
-  @Prop({ required: true })
-  date: Date;
+  @Prop({ required: true, min: 1, max: 31 })
+  date: number;
+
+  @Prop({ required: true, min: 0, max: 6 })
+  day: number;
+
+  @Prop({ required: true, min: 0, max: 11 })
+  month: number;
+
+  @Prop({ required: true, min: MINYEAR })
+  year: number;
 
   @Prop({ required: true, min: 0, max: 23 })
   start_hour: number;
