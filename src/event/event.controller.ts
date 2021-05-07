@@ -10,10 +10,10 @@ export class EventController {
     return await this.eventServive.createEvent(body);
   }
 
-  @Get()
-  async getEventsByDate(@Body() body: GetEventDTO) {
-    return await this.eventServive.getEventsByDate(body);
-  }
+  // @Get()
+  // async getEventsByDate(@Body() body: GetEventDTO) {
+  //   return await this.eventServive.getEventsByDate(body);
+  // }
 
   // @Get()
   // async getEventsByMonth() {}
