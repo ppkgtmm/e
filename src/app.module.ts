@@ -1,11 +1,10 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { EventService } from './event/event.service';
 import { EventModule } from './event/event.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
-import { MongooseModule } from '@nestjs/mongoose';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [
@@ -13,7 +12,16 @@ import { MongooseModule } from '@nestjs/mongoose';
       envFilePath: '.env',
       isGlobal: true,
     }),
-    MongooseModule.forRoot(process.env.DB_URL, { useFindAndModify: false }),
+    TypeOrmModule.forRoot({
+      type: 'mysql',
+      host: process.env.HOST,
+      port: 3306,
+      username: process.env.USERNAME,
+      password: process.env.PASSWORD,
+      database: 'events',
+      autoLoadEntities: true,
+      synchronize: true,
+    }),
     EventModule,
     AuthModule,
   ],

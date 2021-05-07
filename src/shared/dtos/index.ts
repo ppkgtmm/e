@@ -64,3 +64,22 @@ export class EventDTO {
   @IsOptional()
   repeat_interval: Interval;
 }
+
+export class GetEventDTO {
+  @Max(31)
+  @Min(1)
+  @IsInt()
+  @IsNotEmpty()
+  date: number;
+
+  @Max(12)
+  @Min(1)
+  @IsInt()
+  @IsNotEmpty()
+  month: number;
+
+  @Min(MINYEAR)
+  @IsInt()
+  @IsNotEmpty()
+  year: number;
+}

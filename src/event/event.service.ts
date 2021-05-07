@@ -1,19 +1,19 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { InjectRepository } from '@nestjs/typeorm';
 import {
   badRequestExceptionThrower,
   getMonthDays,
   isLeapYear,
 } from 'src/shared/functions';
-import { Event, EventDocument } from '../schemas/event.schema';
-import { EventDTO } from '../shared/dtos';
+import { Repository } from 'typeorm';
+import { Event } from '../schemas/event.entity';
+import { EventDTO, GetEventDTO } from '../shared/dtos';
 
 @Injectable()
 export class EventService {
   constructor(
-    @InjectModel(Event.name)
-    private readonly eventModel: Model<EventDocument>,
+    @InjectRepository(Event)
+    private eventRepository: Repository<Event>,
   ) {}
 
   getPackedDate(event: EventDTO) {
@@ -43,29 +43,31 @@ export class EventService {
     this.validateMonthDate(event);
     this.validateEventTimeOrder(event);
   }
+
+  async doesOverlap(event: EventDTO) {
+    const sameTimeEvents = await this.eventRepository.find();
+    // .find({
+    //   $or: [{ $and: [{}] }, { $and: [] }],
+    // })
+    // .exec();
+  }
   async createEvent(event: EventDTO) {
     this.validateInput(event);
-    const {
-      start_hour,
-      start_minute,
-      end_hour,
-      end_minute,
-      notes,
-      repeat_interval,
-    } = event;
     const timeStamp = this.getPackedDate(event);
     const newEvent = new this.eventModel({
       date: timeStamp.getDate(),
       month: timeStamp.getMonth() + 1,
       year: timeStamp.getFullYear(),
       day: timeStamp.getDay(),
-      start_hour,
-      end_hour,
-      start_minute,
-      end_minute,
-      notes,
-      repeat_interval,
+      start_hour: event.start_hour,
+      end_hour: event.end_hour,
+      start_minute: event.start_minute,
+      end_minute: event.end_minute,
+      notes: event.notes,
+      repeat_interval: event.repeat_interval,
     });
     return await newEvent.save();
   }
+
+  async getEventsByDate(range: GetEventDTO) {}
 }
