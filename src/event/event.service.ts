@@ -8,7 +8,7 @@ import {
 import { getConnection, ObjectLiteral } from 'typeorm';
 import { Event } from '../schemas/event.entity';
 import { EventDTO, GetEventDTO } from '../shared/dtos';
-import { OFFSET } from '../shared/constants';
+import { DAYSINWEEK, OFFSET, SECINDAY } from '../shared/constants';
 
 @Injectable()
 export class EventService {
@@ -185,5 +185,29 @@ export class EventService {
     };
     const events = await this.getEvents(query, parameters);
     return this.selectEvents(events, this.getPackedDate(input));
+  }
+
+  // fetch events that occurr on the same week
+  async getEventsByWeek(input: GetEventDTO) {
+    this.validateMonthDate(input);
+    const inputDate = this.getPackedDate(input);
+    const endOfWeek = new Date(inputDate.getTime() + SECINDAY * DAYSINWEEK);
+    const query =
+      '( event.date >= DATE(:start) AND event.date <= DATE(:end) AND event.repeat_interval IS NULL ) \
+      OR ( event.repeat_interval IN (:...intervals) AND event.date <= DATE(:end) ) OR \
+      ( event.repeat_interval = :monthly AND DAYOFMONTH(event.date) >= DAYOFMONTH( DATE(:start) ) AND DAYOFMONTH(event.date) <= DAYOFMONTH( DATE(:end) )) \
+      OR ( event.repeat_interval = :yearly AND ( ( MONTH(event.date) = MONTH( DATE(:start) ) AND DAYOFMONTH(event.date) >= DAYOFMONTH( DATE(:start) ) ) OR ( MONTH(event.date) = MONTH( DATE(:end) ) AND DAYOFMONTH(event.date) <= DAYOFMONTH( DATE(:end) ) )))';
+    const parameters = {
+      end: `${endOfWeek.getFullYear()}-${
+        endOfWeek.getMonth() + 1
+      }-${endOfWeek.getDate()}`,
+      start: `${inputDate.getFullYear()}-${
+        inputDate.getMonth() + 1
+      }-${inputDate.getDate()}`,
+      intervals: [Interval.DAILY, Interval.WEEKLY],
+      monthly: Interval.MONTHLY,
+      yearly: Interval.YEARLY,
+    };
+    return await this.getEvents(query, parameters);
   }
 }
