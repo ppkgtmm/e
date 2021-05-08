@@ -25,6 +25,7 @@ export class EventDTO {
   @IsNotEmpty()
   month: number;
 
+  @Max(MAXYEAR)
   @Min(MINYEAR)
   @IsInt()
   @IsNotEmpty()
