@@ -684,6 +684,40 @@ describe('AppController (e2e)', () => {
       });
   });
 
+  it('should fetch event on the date', () => {
+    return request(app.getHttpServer())
+      .get('/api/event/by/date/')
+      .send({
+        date: 7,
+        month: 1,
+        year: 2022,
+      })
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body).toBeDefined();
+        expect(body).toHaveLength(2);
+        for (const event of body) {
+          expect(event).toBeDefined();
+          expect(event.repeat_interval).toBeDefined();
+          expect(event.repeat_interval).toEqual('daily');
+        }
+      });
+  });
+  it('should fetch event during the week', () => {
+    return request(app.getHttpServer())
+      .get('/api/event/by/week/')
+      .send({
+        date: 25,
+        month: 2,
+        year: 2021,
+      })
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body).toBeDefined();
+        expect(body).toHaveLength(2);
+      });
+  });
+
   afterAll(async () => {
     await getConnection().close();
     await app.close();

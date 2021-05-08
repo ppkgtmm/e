@@ -224,7 +224,7 @@ export class EventService {
       end: `${endOfWeek.getFullYear()}-${
         endOfWeek.getMonth() + 1
       }-${endOfWeek.getDate()}`,
-      start: `${input.year}-${input.month + 1}-${input.date}`,
+      start: `${input.year}-${input.month}-${input.date}`,
     };
     return await EventService.getSelectQueryBuilder()
       .from(Event, 'event')
