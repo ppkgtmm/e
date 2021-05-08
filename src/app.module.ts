@@ -20,6 +20,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       database: 'events',
       autoLoadEntities: true,
       synchronize: true,
+      keepConnectionAlive: true,
     }),
     EventModule,
   ],

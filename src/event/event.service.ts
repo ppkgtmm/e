@@ -13,7 +13,7 @@ import { DAYSINWEEK, OFFSET, SECINDAY } from '../shared/constants';
 @Injectable()
 export class EventService {
   // returns date for specified time offset
-  getPackedDate(event: EventDTO | GetEventDTO) {
+  static getPackedDate(event: EventDTO | GetEventDTO) {
     const timeStamp = new Date(
       `${event.year}-${event.month}-${event.date} ${OFFSET}`,
     );
@@ -21,7 +21,7 @@ export class EventService {
   }
 
   // ensures that date is a valid date for corresponding month
-  validateMonthDate(event: EventDTO | GetEventDTO) {
+  static validateMonthDate(event: EventDTO | GetEventDTO) {
     const { date, month, year } = event;
     const maxDate = getMonthDays(isLeapYear(year), month);
     badRequestExceptionThrower(
@@ -31,7 +31,7 @@ export class EventService {
   }
 
   // ensures if event ending time comes after starting time
-  validateEventTimeOrder(event: EventDTO) {
+  static validateEventTimeOrder(event: EventDTO) {
     const { start_hour, start_minute, end_hour, end_minute } = event;
     badRequestExceptionThrower(
       start_hour > end_hour ||
@@ -74,21 +74,25 @@ export class EventService {
   }
 
   // reduce code repitition
-  doesOverlapWrapper(interval: Interval, past: Date, future: Date) {
+  static doesOverlapWrapper(interval: Interval, past: Date, future: Date) {
     if (EventService.doesWeeklyOverlap(interval, past, future)) return true;
     if (EventService.doesMonthlyOverlap(interval, past, future)) return true;
     return EventService.doesYearlyOverlap(interval, past, future);
   }
 
-  doesOverlapWithPastEvent(pastEvent: Event, targetDate: Date) {
+  static doesOverlapWithPastEvent(pastEvent: Event, targetDate: Date) {
     const { repeat_interval, date } = pastEvent;
     if (!repeat_interval) return false; // past event does not recurr
     const eventDate = new Date(`${date} ${OFFSET}`);
     if (EventService.doesDailyRecurr(repeat_interval)) return true;
-    return this.doesOverlapWrapper(repeat_interval, eventDate, targetDate);
+    return EventService.doesOverlapWrapper(
+      repeat_interval,
+      eventDate,
+      targetDate,
+    );
   }
 
-  doesOverlapWithFutureEvent(
+  static doesOverlapWithFutureEvent(
     futureEvent: Event, // start to occurr later than event to be scheduled
     targetEvent: EventDTO,
     targetDate: Date,
@@ -99,7 +103,11 @@ export class EventService {
     if (!target_interval) return false;
     if (EventService.doesDailyRecurr(future_interval)) return true;
     if (EventService.doesDailyRecurr(target_interval)) return true;
-    return this.doesOverlapWrapper(target_interval, targetDate, eventDate);
+    return EventService.doesOverlapWrapper(
+      target_interval,
+      targetDate,
+      eventDate,
+    );
   }
 
   // get events with overlapping time but not necessarily day
@@ -111,8 +119,12 @@ export class EventService {
       .getRawMany();
   }
 
+  static getSelectQueryBuilder() {
+    return getConnection().createQueryBuilder();
+  }
+
   // filter out events that occurr on the same day with target event
-  selectEvents(events: Event[], targetDate: Date, target?: EventDTO) {
+  static selectEvents(events: Event[], targetDate: Date, target?: EventDTO) {
     const result = [];
     for (const event of events) {
       const eventDate = new Date(`${event.date} ${OFFSET}`);
@@ -137,31 +149,38 @@ export class EventService {
 
   // ensures that event to be scheduled does not overlap with other events
   async validateNonOverlapping(event: EventDTO, eventDate: Date) {
-    const query =
-      '(event.start_time >= TIME(:start_time)AND event.start_time < TIME(:end_time)) \
-        OR (event.end_time > TIME(:start_time) AND event.end_time <= TIME(:end_time)) \
-        OR (event.start_time <= TIME(:start_time) AND event.end_time >= TIME(:end_time))';
     const parameters = {
       start_time: `${event.start_hour}:${event.start_minute}`,
       end_time: `${event.end_hour}:${event.end_minute}`,
     };
-    const overlappingTime = await this.getEvents(query, parameters);
+    const overlappingTime = await EventService.getSelectQueryBuilder()
+      .from(Event, 'event')
+      .where(
+        '( event.start_time >= TIME(:start_time) AND event.start_time < TIME(:end_time) ) \
+        OR ( event.end_time > TIME(:start_time) AND event.end_time <= TIME(:end_time) ) \
+        OR ( event.start_time <= TIME(:start_time) AND event.end_time >= TIME(:end_time) )',
+        parameters,
+      )
+      .getRawMany();
     if (!overlappingTime || overlappingTime.length === 0) return;
-    const cleanedEvents = this.selectEvents(overlappingTime, eventDate, event);
+    const cleanedEvents = EventService.selectEvents(
+      overlappingTime,
+      eventDate,
+      event,
+    );
     badRequestExceptionThrower(
       cleanedEvents.length > 0,
-      'overlapping events are not allowed',
+      'Overlapping events are not allowed',
     );
   }
 
   // create and schedules event
   async createEvent(event: EventDTO) {
-    this.validateMonthDate(event);
-    this.validateEventTimeOrder(event);
-    const eventDate = this.getPackedDate(event);
+    EventService.validateMonthDate(event);
+    EventService.validateEventTimeOrder(event);
+    const eventDate = EventService.getPackedDate(event);
     await this.validateNonOverlapping(event, eventDate);
-    return await getConnection()
-      .createQueryBuilder()
+    return await EventService.getSelectQueryBuilder()
       .insert()
       .into(Event)
       .values({
@@ -176,38 +195,40 @@ export class EventService {
       .execute();
   }
 
-  // fetch events that occurr on the same date
+  // fetch events that occurr on the corresponding date
   async getEventsByDate(input: GetEventDTO) {
-    this.validateMonthDate(input);
+    EventService.validateMonthDate(input);
     const query = 'event.date <= DATE(:date)';
     const parameters = {
       date: `${input.year}-${input.month}-${input.date}`,
     };
     const events = await this.getEvents(query, parameters);
-    return this.selectEvents(events, this.getPackedDate(input));
+    return EventService.selectEvents(events, EventService.getPackedDate(input));
   }
 
-  // fetch events that occurr on the same week
+  // fetch events that occurr on the corresponding week
+  // input is date to start getting events for
   async getEventsByWeek(input: GetEventDTO) {
-    this.validateMonthDate(input);
-    const inputDate = this.getPackedDate(input);
+    EventService.validateMonthDate(input);
+    const inputDate = EventService.getPackedDate(input);
     const endOfWeek = new Date(inputDate.getTime() + SECINDAY * DAYSINWEEK);
     const query =
       '( event.date >= DATE(:start) AND event.date <= DATE(:end) AND event.repeat_interval IS NULL ) \
       OR ( event.repeat_interval IN (:...intervals) AND event.date <= DATE(:end) ) OR \
-      ( event.repeat_interval = :monthly AND DAYOFMONTH(event.date) >= DAYOFMONTH( DATE(:start) ) AND DAYOFMONTH(event.date) <= DAYOFMONTH( DATE(:end) )) \
-      OR ( event.repeat_interval = :yearly AND ( ( MONTH(event.date) = MONTH( DATE(:start) ) AND DAYOFMONTH(event.date) >= DAYOFMONTH( DATE(:start) ) ) OR ( MONTH(event.date) = MONTH( DATE(:end) ) AND DAYOFMONTH(event.date) <= DAYOFMONTH( DATE(:end) ) )))';
+      ( event.repeat_interval = :monthly AND DAYOFMONTH(event.date) >= DAYOFMONTH( DATE(:start) ) AND DAYOFMONTH(event.date) <= DAYOFMONTH( DATE(:end) ) ) \
+      OR ( event.repeat_interval = :yearly AND ( ( MONTH(event.date) = MONTH( DATE(:start) ) AND DAYOFMONTH(event.date) >= DAYOFMONTH( DATE(:start) ) ) OR ( MONTH(event.date) = MONTH( DATE(:end) ) AND DAYOFMONTH(event.date) <= DAYOFMONTH( DATE(:end) ) ) ) )';
     const parameters = {
-      end: `${endOfWeek.getFullYear()}-${
-        endOfWeek.getMonth() + 1
-      }-${endOfWeek.getDate()}`,
-      start: `${inputDate.getFullYear()}-${
-        inputDate.getMonth() + 1
-      }-${inputDate.getDate()}`,
       intervals: [Interval.DAILY, Interval.WEEKLY],
       monthly: Interval.MONTHLY,
       yearly: Interval.YEARLY,
+      end: `${endOfWeek.getFullYear()}-${
+        endOfWeek.getMonth() + 1
+      }-${endOfWeek.getDate()}`,
+      start: `${input.year}-${input.month + 1}-${input.date}`,
     };
-    return await this.getEvents(query, parameters);
+    return await EventService.getSelectQueryBuilder()
+      .from(Event, 'event')
+      .where(query, parameters)
+      .getRawMany();
   }
 }
