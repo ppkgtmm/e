@@ -4,6 +4,7 @@ import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
 import { ErrorFilter, exceptionFactory } from '../src/exception';
 import { getConnection } from 'typeorm';
+import { testOverlapResponse } from './../test/functions';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
@@ -104,7 +105,10 @@ describe('AppController (e2e)', () => {
         end_minute: 0,
         repeat_interval: null,
       })
-      .expect(400);
+      .expect(400)
+      .expect(({ body }) => {
+        testOverlapResponse(body);
+      });
   });
   it('should create event', () => {
     return request(app.getHttpServer())
@@ -136,7 +140,10 @@ describe('AppController (e2e)', () => {
         end_minute: 0,
         repeat_interval: 'monthly',
       })
-      .expect(400);
+      .expect(400)
+      .expect(({ body }) => {
+        testOverlapResponse(body);
+      });
   });
   it('should not create event', () => {
     return request(app.getHttpServer())
@@ -152,7 +159,10 @@ describe('AppController (e2e)', () => {
         end_minute: 0,
         repeat_interval: null,
       })
-      .expect(400);
+      .expect(400)
+      .expect(({ body }) => {
+        testOverlapResponse(body);
+      });
   });
 
   it('should create event', () => {
@@ -186,7 +196,10 @@ describe('AppController (e2e)', () => {
         end_minute: 0,
         repeat_interval: 'weekly',
       })
-      .expect(400);
+      .expect(400)
+      .expect(({ body }) => {
+        testOverlapResponse(body);
+      });
   });
 
   it('should not create event', () => {
@@ -203,7 +216,10 @@ describe('AppController (e2e)', () => {
         end_minute: 0,
         repeat_interval: 'weekly',
       })
-      .expect(400);
+      .expect(400)
+      .expect(({ body }) => {
+        testOverlapResponse(body);
+      });
   });
 
   it('should not create event', () => {
@@ -220,7 +236,10 @@ describe('AppController (e2e)', () => {
         end_minute: 0,
         repeat_interval: 'weekly',
       })
-      .expect(400);
+      .expect(400)
+      .expect(({ body }) => {
+        testOverlapResponse(body);
+      });
   });
 
   it('should not create event', () => {
@@ -237,7 +256,10 @@ describe('AppController (e2e)', () => {
         end_minute: 0,
         repeat_interval: 'daily',
       })
-      .expect(400);
+      .expect(400)
+      .expect(({ body }) => {
+        testOverlapResponse(body);
+      });
   });
 
   it('should create event', () => {
@@ -271,7 +293,10 @@ describe('AppController (e2e)', () => {
         end_minute: 0,
         repeat_interval: 'weekly',
       })
-      .expect(400);
+      .expect(400)
+      .expect(({ body }) => {
+        testOverlapResponse(body);
+      });
   });
 
   it('should create event', () => {
@@ -305,7 +330,10 @@ describe('AppController (e2e)', () => {
         end_minute: 0,
         repeat_interval: null,
       })
-      .expect(400);
+      .expect(400)
+      .expect(({ body }) => {
+        testOverlapResponse(body);
+      });
   });
 
   it('should not create event', () => {
@@ -322,7 +350,10 @@ describe('AppController (e2e)', () => {
         end_minute: 0,
         repeat_interval: null,
       })
-      .expect(400);
+      .expect(400)
+      .expect(({ body }) => {
+        testOverlapResponse(body);
+      });
   });
 
   it('should not create event', () => {
@@ -339,7 +370,10 @@ describe('AppController (e2e)', () => {
         end_minute: 0,
         repeat_interval: 'daily',
       })
-      .expect(400);
+      .expect(400)
+      .expect(({ body }) => {
+        testOverlapResponse(body);
+      });
   });
 
   it('should create event', () => {
@@ -373,7 +407,10 @@ describe('AppController (e2e)', () => {
         end_minute: 30,
         repeat_interval: 'monthly',
       })
-      .expect(400);
+      .expect(400)
+      .expect(({ body }) => {
+        testOverlapResponse(body);
+      });
   });
 
   it('should not create event', () => {
@@ -390,7 +427,10 @@ describe('AppController (e2e)', () => {
         end_minute: 30,
         repeat_interval: null,
       })
-      .expect(400);
+      .expect(400)
+      .expect(({ body }) => {
+        testOverlapResponse(body);
+      });
   });
 
   it('should create event', () => {
@@ -424,7 +464,10 @@ describe('AppController (e2e)', () => {
         end_minute: 0,
         repeat_interval: 'weekly',
       })
-      .expect(400);
+      .expect(400)
+      .expect(({ body }) => {
+        testOverlapResponse(body);
+      });
   });
 
   it('should not create event', () => {
@@ -441,7 +484,10 @@ describe('AppController (e2e)', () => {
         end_minute: 0,
         repeat_interval: null,
       })
-      .expect(400);
+      .expect(400)
+      .expect(({ body }) => {
+        testOverlapResponse(body);
+      });
   });
 
   it('should create event', () => {
@@ -475,7 +521,10 @@ describe('AppController (e2e)', () => {
         end_minute: 0,
         repeat_interval: 'yearly',
       })
-      .expect(400);
+      .expect(400)
+      .expect(({ body }) => {
+        testOverlapResponse(body);
+      });
   });
 
   it('should not create event', () => {
@@ -492,7 +541,10 @@ describe('AppController (e2e)', () => {
         end_minute: 0,
         repeat_interval: 'monthly',
       })
-      .expect(400);
+      .expect(400)
+      .expect(({ body }) => {
+        testOverlapResponse(body);
+      });
   });
 
   it('should not create event', () => {
@@ -509,7 +561,10 @@ describe('AppController (e2e)', () => {
         end_minute: 0,
         repeat_interval: 'daily',
       })
-      .expect(400);
+      .expect(400)
+      .expect(({ body }) => {
+        testOverlapResponse(body);
+      });
   });
 
   it('should not create event', () => {
@@ -526,7 +581,107 @@ describe('AppController (e2e)', () => {
         end_minute: 0,
         repeat_interval: 'weekly',
       })
-      .expect(400);
+      .expect(400)
+      .expect(({ body }) => {
+        testOverlapResponse(body);
+      });
+  });
+
+  it('should create event', () => {
+    return request(app.getHttpServer())
+      .post('/api/event/')
+      .send({
+        notes: 'abcd',
+        date: 2,
+        month: 1,
+        year: 2022,
+        start_hour: 19,
+        start_minute: 0,
+        end_hour: 20,
+        end_minute: 0,
+        repeat_interval: 'daily',
+      })
+      .expect(201);
+  });
+
+  it('should not create event', () => {
+    return request(app.getHttpServer())
+      .post('/api/event/')
+      .send({
+        notes: 'abcd',
+        date: 19,
+        month: 12,
+        year: 2021,
+        start_hour: 19,
+        start_minute: 0,
+        end_hour: 20,
+        end_minute: 0,
+        repeat_interval: 'weekly',
+      })
+      .expect(400)
+      .expect(({ body }) => {
+        testOverlapResponse(body);
+      });
+  });
+
+  it('should not create event', () => {
+    return request(app.getHttpServer())
+      .post('/api/event/')
+      .send({
+        notes: 'abcd',
+        date: 2,
+        month: 1,
+        year: 2021,
+        start_hour: 19,
+        start_minute: 0,
+        end_hour: 20,
+        end_minute: 0,
+        repeat_interval: 'yearly',
+      })
+      .expect(400)
+      .expect(({ body }) => {
+        testOverlapResponse(body);
+      });
+  });
+
+  it('should not create event', () => {
+    return request(app.getHttpServer())
+      .post('/api/event/')
+      .send({
+        notes: 'abcd',
+        date: 2,
+        month: 9,
+        year: 2021,
+        start_hour: 19,
+        start_minute: 0,
+        end_hour: 20,
+        end_minute: 0,
+        repeat_interval: 'monthly',
+      })
+      .expect(400)
+      .expect(({ body }) => {
+        testOverlapResponse(body);
+      });
+  });
+
+  it('should not create event', () => {
+    return request(app.getHttpServer())
+      .post('/api/event/')
+      .send({
+        notes: 'abcd',
+        date: 31,
+        month: 12,
+        year: 2021,
+        start_hour: 19,
+        start_minute: 0,
+        end_hour: 20,
+        end_minute: 0,
+        repeat_interval: 'daily',
+      })
+      .expect(400)
+      .expect(({ body }) => {
+        testOverlapResponse(body);
+      });
   });
 
   afterAll(async () => {
