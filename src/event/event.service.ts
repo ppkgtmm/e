@@ -153,15 +153,12 @@ export class EventService {
       start_time: `${event.start_hour}:${event.start_minute}`,
       end_time: `${event.end_hour}:${event.end_minute}`,
     };
-    const overlappingTime = await EventService.getSelectQueryBuilder()
-      .from(Event, 'event')
-      .where(
-        '( event.start_time >= TIME(:start_time) AND event.start_time < TIME(:end_time) ) \
+    const overlappingTime = await this.getEvents(
+      '( event.start_time >= TIME(:start_time) AND event.start_time < TIME(:end_time) ) \
         OR ( event.end_time > TIME(:start_time) AND event.end_time <= TIME(:end_time) ) \
         OR ( event.start_time <= TIME(:start_time) AND event.end_time >= TIME(:end_time) )',
-        parameters,
-      )
-      .getRawMany();
+      parameters,
+    );
     if (!overlappingTime || overlappingTime.length === 0) return;
     const cleanedEvents = EventService.selectEvents(
       overlappingTime,
@@ -231,9 +228,6 @@ export class EventService {
       }-${endOfWeek.getDate()}`,
       start: `${input.year}-${input.month}-${input.date}`,
     };
-    return await EventService.getSelectQueryBuilder()
-      .from(Event, 'event')
-      .where(query, parameters)
-      .getRawMany();
+    return await this.getEvents(query, parameters);
   }
 }

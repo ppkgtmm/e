@@ -15,6 +15,7 @@ describe('EventService', () => {
   const mar6NextYear = getDate(2013, 3, 6);
   const mar13 = getDate(2012, 3, 13);
   const feb29 = getDate(2012, 2, 29);
+  const nextFeb29 = getDate(2016, 2, 29);
   const feb28NextYear = getDate(2013, 2, 28);
   const may31 = getDate(2012, 5, 31);
   const jun30 = getDate(2012, 6, 30);
@@ -132,6 +133,9 @@ describe('EventService', () => {
     expect(
       EventService.doesMonthlyOverlap(Interval.MONTHLY, feb29, feb29),
     ).toBeTruthy();
+    expect(
+      EventService.doesMonthlyOverlap(Interval.MONTHLY, feb29, nextFeb29),
+    ).toBeTruthy();
   });
 
   it('should correctly detect yearly recurrence', () => {
@@ -161,6 +165,9 @@ describe('EventService', () => {
     ).toBeFalsy();
     expect(
       EventService.doesYearlyOverlap(Interval.YEARLY, feb29, feb29),
+    ).toBeTruthy();
+    expect(
+      EventService.doesMonthlyOverlap(Interval.MONTHLY, feb29, nextFeb29),
     ).toBeTruthy();
   });
 });
