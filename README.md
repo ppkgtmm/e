@@ -14,18 +14,36 @@ http://localhost:3000/
 ```http
 POST /api/event/
 ```
+#### Request body
+
+```json 
+{
+        "notes": "string",
+        "date": "number",
+        "month": "number",
+        "year": "number",
+        "start_hour": "number",
+        "start_minute": "number",
+        "end_hour": "number",
+        "end_minute": "number",
+        "repeat_interval": "daily | weekly | monthly | yearly"
+}
+```
+*** event repeat interval is optional
 
 2. Get events for a date
 
 ```http
 GET /api/event/by/date/
 ```
+#### Request body
 
 3. Get events for a week
 
 ```http
 GET /api/event/by/week/
 ```
+#### Request body
 
 ## Set up
 1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop)
