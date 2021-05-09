@@ -19,6 +19,14 @@ describe('EventService', () => {
   const feb28NextYear = getDate(2013, 2, 28);
   const may31 = getDate(2012, 5, 31);
   const jun30 = getDate(2012, 6, 30);
+  const pastEvent = {
+    notes: 'abcd',
+    date: '2020-02-29',
+    id: null,
+    start_time: '10:30',
+    end_time: '10:45',
+    repeat_interval: null,
+  };
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [EventService],
@@ -170,4 +178,16 @@ describe('EventService', () => {
       EventService.doesMonthlyOverlap(Interval.MONTHLY, feb29, nextFeb29),
     ).toBeTruthy();
   });
+  it('should correctly detect overlap with past recurring event', () => {
+    expect(
+      EventService.doesOverlapWithPastEvent(pastEvent, getDate(2024, 2, 29)),
+    ).toBeFalsy();
+    expect(
+      EventService.doesOverlapWithPastEvent(
+        { ...pastEvent, repeat_interval: Interval.YEARLY },
+        getDate(2024, 2, 29),
+      ),
+    ).toBeTruthy();
+  });
+  it('should correctly detect overlap with future recurring event', () => {});
 });
