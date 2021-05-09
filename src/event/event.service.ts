@@ -222,10 +222,6 @@ export class EventService {
         ( event.repeat_interval = :yearly AND \
           ( ( MONTH(event.date) = MONTH(:start) AND DAYOFMONTH(event.date) >= DAYOFMONTH(:start) ) OR \
             ( MONTH(event.date) = MONTH(:end) AND DAYOFMONTH(event.date) <= DAYOFMONTH(:end) ) ) ) )';
-    // OR ( event.repeat_interval = :yearly AND ( ( MONTH(event.date) = MONTH(:start) AND DAYOFMONTH(event.date) >= DAYOFMONTH(:start) ) OR \
-    // ( MONTH(event.date) = MONTH(:end) AND DAYOFMONTH(event.date) <= DAYOFMONTH(:end) ) ) )';
-    //( ( event.repeat_interval = :yearly AND ( ( MONTH(event.date) = MONTH(:start) AND DAYOFMONTH(event.date) >= DAYOFMONTH(:start) ) OR \
-    // ( MONTH(event.date) = MONTH(:end) AND DAYOFMONTH(event.date) <= DAYOFMONTH(:end) ) )
     const parameters = {
       intervals: [Interval.DAILY, Interval.WEEKLY],
       monthly: Interval.MONTHLY,
