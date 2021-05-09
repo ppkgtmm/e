@@ -74,9 +74,19 @@ describe('EventService', () => {
   });
 
   it('should throw error for invalid month date', async () => {
-    const input = { date: 29, month: 2, year: 2021 };
-    expect(() => EventService.validateMonthDate(input)).toThrow(
-      `Invalid date for month ${input.month}`,
+    const inputs = [
+      { date: 29, month: 2, year: 2021 },
+      { date: 31, month: 4, year: 2021 },
+    ];
+    expect(() => EventService.validateMonthDate(inputs[0])).toThrow(
+      `Invalid date for month ${inputs[0].month}`,
+    );
+    expect(() =>
+      EventService.validateMonthDate({ ...inputs[0], year: 2020 }),
+    ).not.toThrow(`Invalid date for month ${inputs[0].month}`);
+
+    expect(() => EventService.validateMonthDate(inputs[1])).toThrow(
+      `Invalid date for month ${inputs[1].month}`,
     );
   });
 
@@ -203,6 +213,7 @@ describe('EventService', () => {
       EventService.doesMonthlyOverlap(Interval.MONTHLY, feb29, nextFeb29),
     ).toBeTruthy();
   });
+
   it('should correctly detect overlap with past recurring event', () => {
     expect(
       EventService.doesOverlapWithPastEvent(
@@ -217,6 +228,7 @@ describe('EventService', () => {
       ),
     ).toBeTruthy();
   });
+
   it('should correctly detect overlap with future recurring event', () => {
     expect(
       EventService.doesOverlapWithFutureEvent(
@@ -240,9 +252,15 @@ describe('EventService', () => {
       ),
     ).toBeTruthy();
   });
+
   it('should select correct events', () => {
-    expect(
-      EventService.selectEvents(events, getDate(2024, 2, 29), Interval.MONTHLY),
-    ).toHaveLength(events.length - 1);
+    const filteredEvents = EventService.selectEvents(
+      events,
+      getDate(2024, 2, 29),
+      Interval.MONTHLY,
+    );
+    expect(filteredEvents).toBeDefined();
+    expect(filteredEvents).toHaveLength(events.length - 1);
+    expect(filteredEvents).toEqual(events.slice(0, events.length - 1));
   });
 });
