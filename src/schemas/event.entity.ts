@@ -16,29 +16,6 @@ export class Event {
 
   @Column('time')
   end_time: string;
-  // @Column('int')
-  // date: number;
-
-  // @Column('int')
-  // day: number;
-
-  // @Column('int')
-  // month: number;
-
-  // @Column('int')
-  // year: number;
-
-  // @Column('int')
-  // start_hour: number;
-
-  // @Column('int')
-  // start_minute: number;
-
-  // @Column('int')
-  // end_hour: number;
-
-  // @Column('int')
-  // end_minute: number;
 
   @Column('text')
   notes: string;
