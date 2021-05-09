@@ -786,6 +786,47 @@ describe('Events (e2e)', () => {
       });
   });
 
+  it('should not create event', () => {
+    return request(app.getHttpServer())
+      .post('/api/event/')
+      .send({
+        notes: '  ',
+        date: 99,
+        month: '134',
+        year: -9,
+        start_hour: 999,
+        start_minute: -88,
+        end_hour: 20,
+        end_minute: 0,
+        repeat_interval: ' ',
+      })
+      .expect(400)
+      .expect(({ body }) => {
+        expect(body).toBeDefined();
+        expect(body.error).toBeDefined();
+        expect(body.error.notes).toBeDefined();
+        expect(body.error.notes).toHaveLength(1);
+
+        expect(body.error.date).toBeDefined();
+        expect(body.error.date).toHaveLength(1);
+
+        expect(body.error.month).toBeDefined();
+        expect(body.error.month).toHaveLength(3);
+
+        expect(body.error.year).toBeDefined();
+        expect(body.error.year).toHaveLength(1);
+
+        expect(body.error.start_hour).toBeDefined();
+        expect(body.error.start_hour).toHaveLength(1);
+
+        expect(body.error.start_minute).toBeDefined();
+        expect(body.error.start_minute).toHaveLength(1);
+
+        expect(body.error.repeat_interval).toBeDefined();
+        expect(body.error.repeat_interval).toHaveLength(1);
+      });
+  });
+
   afterAll(async () => {
     await getConnection().close();
     await app.close();
