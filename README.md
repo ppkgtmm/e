@@ -2,6 +2,31 @@
 
 Event Scheduler and Calendar API that allows users to enter date and time of an event, event notes and then schedule those events. Users can then browse the calendar or search the calendar for specific events on specific day or week. The app also allow to create recurring events that recur every day, week, month, year.
 
+## Usage
+### URL
+
+```
+http://localhost:3000/
+```
+### Paths
+1. Create an event
+
+```http
+POST /api/event/
+```
+
+2. Get events for a date
+
+```http
+GET /api/event/by/date/
+```
+
+3. Get events for a week
+
+```http
+GET /api/event/by/week/
+```
+
 ## Set up
 1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop)
 
