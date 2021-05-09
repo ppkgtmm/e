@@ -6,7 +6,7 @@ import { ErrorFilter, exceptionFactory } from '../src/exception';
 import { getConnection } from 'typeorm';
 import { testOverlapResponse } from './../test/functions';
 
-describe('AppController (e2e)', () => {
+describe('Events (e2e)', () => {
   let app: INestApplication;
 
   beforeAll(async () => {
@@ -43,6 +43,7 @@ describe('AppController (e2e)', () => {
       })
       .expect(201);
   });
+
   it('should create event', () => {
     return request(app.getHttpServer())
       .post('/api/event/')
@@ -59,6 +60,7 @@ describe('AppController (e2e)', () => {
       })
       .expect(201);
   });
+
   it('should create event', () => {
     return request(app.getHttpServer())
       .post('/api/event/')
@@ -75,6 +77,7 @@ describe('AppController (e2e)', () => {
       })
       .expect(201);
   });
+
   it('should create event', () => {
     return request(app.getHttpServer())
       .post('/api/event/')
@@ -91,6 +94,7 @@ describe('AppController (e2e)', () => {
       })
       .expect(201);
   });
+
   it('should not create event', () => {
     return request(app.getHttpServer())
       .post('/api/event/')
@@ -110,6 +114,7 @@ describe('AppController (e2e)', () => {
         testOverlapResponse(body);
       });
   });
+
   it('should create event', () => {
     return request(app.getHttpServer())
       .post('/api/event/')
@@ -126,6 +131,7 @@ describe('AppController (e2e)', () => {
       })
       .expect(201);
   });
+
   it('should not create event', () => {
     return request(app.getHttpServer())
       .post('/api/event/')
@@ -145,6 +151,7 @@ describe('AppController (e2e)', () => {
         testOverlapResponse(body);
       });
   });
+
   it('should not create event', () => {
     return request(app.getHttpServer())
       .post('/api/event/')
