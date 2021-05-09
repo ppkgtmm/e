@@ -25,8 +25,33 @@ describe('EventService', () => {
     id: null,
     start_time: '10:30',
     end_time: '10:45',
+    repeat_interval: Interval.MONTHLY,
+  };
+  const futureEvent = {
+    notes: 'abcd',
+    date: '2028-02-29',
+    id: null,
+    start_time: '10:30',
+    end_time: '10:45',
+    repeat_interval: Interval.YEARLY,
+  };
+  const presentEvent = {
+    notes: 'abcd',
+    date: '2024-02-29',
+    id: null,
+    start_time: '10:30',
+    end_time: '10:45',
     repeat_interval: null,
   };
+  const extraEvent = {
+    notes: 'abcd',
+    date: '2028-03-31',
+    id: null,
+    start_time: '10:30',
+    end_time: '10:45',
+    repeat_interval: null,
+  };
+  const events = [pastEvent, futureEvent, presentEvent, extraEvent];
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [EventService],
@@ -180,7 +205,10 @@ describe('EventService', () => {
   });
   it('should correctly detect overlap with past recurring event', () => {
     expect(
-      EventService.doesOverlapWithPastEvent(pastEvent, getDate(2024, 2, 29)),
+      EventService.doesOverlapWithPastEvent(
+        { ...pastEvent, repeat_interval: null },
+        getDate(2024, 2, 29),
+      ),
     ).toBeFalsy();
     expect(
       EventService.doesOverlapWithPastEvent(
@@ -189,5 +217,32 @@ describe('EventService', () => {
       ),
     ).toBeTruthy();
   });
-  it('should correctly detect overlap with future recurring event', () => {});
+  it('should correctly detect overlap with future recurring event', () => {
+    expect(
+      EventService.doesOverlapWithFutureEvent(
+        { ...futureEvent, repeat_interval: null },
+        null,
+        getDate(2024, 2, 29),
+      ),
+    ).toBeFalsy();
+    expect(
+      EventService.doesOverlapWithFutureEvent(
+        futureEvent,
+        Interval.YEARLY,
+        getDate(2020, 2, 29),
+      ),
+    ).toBeTruthy();
+    expect(
+      EventService.doesOverlapWithFutureEvent(
+        futureEvent,
+        Interval.MONTHLY,
+        getDate(2020, 3, 31),
+      ),
+    ).toBeTruthy();
+  });
+  it('should select correct events', () => {
+    expect(
+      EventService.selectEvents(events, getDate(2024, 2, 29), Interval.MONTHLY),
+    ).toHaveLength(events.length - 1);
+  });
 });

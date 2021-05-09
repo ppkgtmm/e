@@ -61,7 +61,7 @@ export class EventService {
     // check for end of month shifted past events
     if (future.getDate() === maxMonthdays && past.getDate() >= maxMonthdays)
       return true;
-    return future.getDate() === past.getDate(); // check for date which exist in all months
+    return future.getDate() === past.getDate(); // check date which exist in all months
   }
 
   // return whether event in past recurr yearly and overlap with event in future
@@ -69,17 +69,17 @@ export class EventService {
   static doesYearlyOverlap(interval: Interval, past: Date, future: Date) {
     if (interval !== Interval.YEARLY) return false;
     if (past.getMonth() !== future.getMonth()) return false;
-    // let monthly overlap checker check for 29 feb event which can be shifted to 28
     return this.doesMonthlyOverlap(Interval.MONTHLY, past, future);
   }
 
-  // reduce code repitition
+  // to reduce code duplication
   static doesOverlapWrapper(interval: Interval, past: Date, future: Date) {
     if (EventService.doesWeeklyOverlap(interval, past, future)) return true;
     if (EventService.doesMonthlyOverlap(interval, past, future)) return true;
     return EventService.doesYearlyOverlap(interval, past, future);
   }
 
+  // check if event to be scheduled(on target date) overlap with recurring past event
   static doesOverlapWithPastEvent(pastEvent: Event, targetDate: Date) {
     const { repeat_interval, date } = pastEvent;
     if (!repeat_interval) return false; // past event does not recurr
@@ -93,14 +93,14 @@ export class EventService {
   }
 
   static doesOverlapWithFutureEvent(
-    futureEvent: Event, // start to occurr later than event to be scheduled
-    targetEvent: EventDTO,
-    targetDate: Date,
+    futureEvent: Event, // start to occurr later than event to be scheduled (target event)
+    repeat_interval: Interval, // repeat interval of target event
+    targetDate: Date, // date of target event
   ) {
     const eventDate = new Date(`${futureEvent.date} ${OFFSET}`);
     const future_interval = futureEvent.repeat_interval;
-    const target_interval = targetEvent.repeat_interval;
-    if (!target_interval) return false;
+    const target_interval = repeat_interval;
+    if (!target_interval) return false; // target event is non-recurring event
     if (EventService.doesDailyRecurr(future_interval)) return true;
     if (EventService.doesDailyRecurr(target_interval)) return true;
     return EventService.doesOverlapWrapper(
@@ -110,7 +110,7 @@ export class EventService {
     );
   }
 
-  // get events with overlapping time but not necessarily day
+  // get events from database
   async getEvents(condition: string, parameters?: ObjectLiteral) {
     return await getConnection()
       .createQueryBuilder()
@@ -119,12 +119,17 @@ export class EventService {
       .getRawMany();
   }
 
+  // helper to create database query
   static getSelectQueryBuilder() {
     return getConnection().createQueryBuilder();
   }
 
   // filter out events that occurr on the same day with target event
-  static selectEvents(events: Event[], targetDate: Date, target?: EventDTO) {
+  static selectEvents(
+    events: Event[],
+    targetDate: Date,
+    target_interval?: Interval,
+  ) {
     const result = [];
     for (const event of events) {
       const eventDate = new Date(`${event.date} ${OFFSET}`);
@@ -138,8 +143,8 @@ export class EventService {
         result.push(event);
       } else if (
         eventDate.getTime() > targetDate.getTime() &&
-        target &&
-        this.doesOverlapWithFutureEvent(event, target, targetDate)
+        target_interval &&
+        this.doesOverlapWithFutureEvent(event, target_interval, targetDate)
       ) {
         result.push(event);
       }
@@ -153,6 +158,7 @@ export class EventService {
       start_time: `${event.start_hour}:${event.start_minute}`,
       end_time: `${event.end_hour}:${event.end_minute}`,
     };
+    // get events with overlapping time but not necessarily date
     const overlappingTime = await this.getEvents(
       '( event.start_time >= TIME(:start_time) AND event.start_time < TIME(:end_time) ) \
         OR ( event.end_time > TIME(:start_time) AND event.end_time <= TIME(:end_time) ) \
@@ -163,7 +169,7 @@ export class EventService {
     const cleanedEvents = EventService.selectEvents(
       overlappingTime,
       eventDate,
-      event,
+      event.repeat_interval,
     );
     badRequestExceptionThrower(
       cleanedEvents.length > 0,
