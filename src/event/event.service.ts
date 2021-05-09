@@ -213,10 +213,19 @@ export class EventService {
     const inputDate = EventService.getPackedDate(input);
     const endOfWeek = new Date(inputDate.getTime() + SECINDAY * DAYSINWEEK);
     const query =
-      '( event.date >= DATE(:start) AND event.date <= DATE(:end) AND event.repeat_interval IS NULL ) \
-      OR ( event.repeat_interval IN (:...intervals) AND event.date <= DATE(:end) ) OR \
-      ( event.repeat_interval = :monthly AND DAYOFMONTH(event.date) >= DAYOFMONTH( DATE(:start) ) AND DAYOFMONTH(event.date) <= DAYOFMONTH( DATE(:end) ) ) \
-      OR ( event.repeat_interval = :yearly AND ( ( MONTH(event.date) = MONTH( DATE(:start) ) AND DAYOFMONTH(event.date) >= DAYOFMONTH( DATE(:start) ) ) OR ( MONTH(event.date) = MONTH( DATE(:end) ) AND DAYOFMONTH(event.date) <= DAYOFMONTH( DATE(:end) ) ) ) )';
+      'event.date <= DATE(:end) AND ( \
+        ( event.date >= DATE(:start) AND event.repeat_interval IS NULL ) OR \
+        ( event.repeat_interval IN (:...intervals) ) OR \
+        ( event.repeat_interval = :monthly AND \
+          ( ( MONTH(:end) > MONTH(:start) AND (  DAYOFMONTH(event.date) >= DAYOFMONTH(:start) OR DAYOFMONTH(event.date) <= DAYOFMONTH(:end) ) ) OR \
+            ( DAYOFMONTH(event.date) >= DAYOFMONTH(:start) AND DAYOFMONTH(event.date) <= DAYOFMONTH(:end) ) ) ) OR \
+        ( event.repeat_interval = :yearly AND \
+          ( ( MONTH(event.date) = MONTH(:start) AND DAYOFMONTH(event.date) >= DAYOFMONTH(:start) ) OR \
+            ( MONTH(event.date) = MONTH(:end) AND DAYOFMONTH(event.date) <= DAYOFMONTH(:end) ) ) ) )';
+    // OR ( event.repeat_interval = :yearly AND ( ( MONTH(event.date) = MONTH(:start) AND DAYOFMONTH(event.date) >= DAYOFMONTH(:start) ) OR \
+    // ( MONTH(event.date) = MONTH(:end) AND DAYOFMONTH(event.date) <= DAYOFMONTH(:end) ) ) )';
+    //( ( event.repeat_interval = :yearly AND ( ( MONTH(event.date) = MONTH(:start) AND DAYOFMONTH(event.date) >= DAYOFMONTH(:start) ) OR \
+    // ( MONTH(event.date) = MONTH(:end) AND DAYOFMONTH(event.date) <= DAYOFMONTH(:end) ) )
     const parameters = {
       intervals: [Interval.DAILY, Interval.WEEKLY],
       monthly: Interval.MONTHLY,

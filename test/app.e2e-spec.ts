@@ -703,6 +703,22 @@ describe('AppController (e2e)', () => {
         }
       });
   });
+
+  it('should fetch event on the date', () => {
+    return request(app.getHttpServer())
+      .get('/api/event/by/date/')
+      .send({
+        date: 29,
+        month: 2,
+        year: 2024,
+      })
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body).toBeDefined();
+        expect(body).toHaveLength(5);
+      });
+  });
+
   it('should fetch event during the week', () => {
     return request(app.getHttpServer())
       .get('/api/event/by/week/')
@@ -714,7 +730,52 @@ describe('AppController (e2e)', () => {
       .expect(200)
       .expect(({ body }) => {
         expect(body).toBeDefined();
-        expect(body).toHaveLength(2);
+        expect(body).toHaveLength(3);
+      });
+  });
+
+  it('should fetch event during the week', () => {
+    return request(app.getHttpServer())
+      .get('/api/event/by/week/')
+      .send({
+        date: 23,
+        month: 2,
+        year: 2024,
+      })
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body).toBeDefined();
+        expect(body).toHaveLength(6);
+      });
+  });
+
+  it('should fetch event during the week', () => {
+    return request(app.getHttpServer())
+      .get('/api/event/by/week/')
+      .send({
+        date: 28,
+        month: 2,
+        year: 2024,
+      })
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body).toBeDefined();
+        expect(body).toHaveLength(6);
+      });
+  });
+
+  it('should fetch event during the week', () => {
+    return request(app.getHttpServer())
+      .get('/api/event/by/week/')
+      .send({
+        date: 22,
+        month: 2,
+        year: 2024,
+      })
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body).toBeDefined();
+        expect(body).toHaveLength(4);
       });
   });
 
