@@ -2,20 +2,12 @@
 
 Event Scheduler and Calendar API that allows users to enter date and time of an event, event notes and then schedule those events. Users can then browse the calendar or search the calendar for specific events on specific day or week. The app also allow to create recurring events that recur every day, week, month, year.
 
-## Usage
-
-### URL
-
-```
-http://localhost:3000/
-```
-
-### Endpoints
+## API Endpoints
 
 1. Create an event
 
 ```http
-POST /api/event/
+POST http://localhost:3000/api/event/
 ```
 
 #### Request body
@@ -39,7 +31,7 @@ POST /api/event/
 2. Get events for a date
 
 ```http
-GET /api/event/by/date/
+GET http://localhost:3000/api/event/by/date/
 ```
 
 #### Request body
@@ -55,7 +47,7 @@ GET /api/event/by/date/
 3. Get events for a week
 
 ```http
-GET /api/event/by/week/
+GET http://localhost:3000/api/event/by/week/
 ```
 
 #### Request body
@@ -101,7 +93,7 @@ $ docker-compose up -d
 $ docker exec -it mysql mysql -u root -p[PASSWORD] -e "create database events;"
 ```
 
-## Running the app
+## Start app
 
 ```bash
 # development
@@ -114,7 +106,7 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
-## Test
+## Run tests
 
 ```bash
 # unit tests
