@@ -1,7 +1,6 @@
 # event scheduler api
 
-API that gets event date and time as well as event notes from users for event scheduling. Users can then browse for events occuring on specific day or week. Users can also create recurring events on daily, weekly, monthly or yearly basis.
-
+API which enables users to input event date, time, and notes for the purpose of event scheduling. Subsequently, users can search for events taking place on particular days or within specific weeks. Additionally, scheduling of events recurring every day, week, month, or year is also supported.
 ## API endpoints
 
 1. Create an event
