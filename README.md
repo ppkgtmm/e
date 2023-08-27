@@ -26,7 +26,7 @@ POST http://localhost:3000/api/event/
 }
 ```
 
-\*\*\* event repeat interval is optional
+remark : event repeat interval is optional
 
 2. Get events for a date
 
