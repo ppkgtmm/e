@@ -2,84 +2,76 @@
 
 API which enables users to provide event date, time, and notes for scheduling purpose. Afterwards, users can search for events taking place on particular days or within specific weeks. Scheduling of events that recur every day, week, month, or year is also supported by the API
 
-## API endpoints
+## endpoints
 
-1. Create an event
+- create an event
 
 ```http
 POST http://localhost:3000/api/event/
 ```
 
-2. Get events for specified date
+- get events for specified date
 
 ```http
 GET http://localhost:3000/api/event/by/date/
 ```
 
-3. Get events for specified week
+- get events for specified week
 
 ```http
 GET http://localhost:3000/api/event/by/week/
 ```
 
-## Set up
+## set up
 
-1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop)
+1. install [Docker Desktop](https://www.docker.com/products/docker-desktop)
 
-2. Run below to install required dependencies
+2. run below to install required dependencies
 
-```bash
+```sh
 npm install
 ```
 
-3. At project root directory, create file .env then paste the content below to the file to help connect to database
+3. at project root directory, create file .env then paste the content below to the file to help connect to database
 
-```
+```sh
 USERNAME=root
 PASSWORD=12345
 HOST=localhost
 ```
 
-4. Create and start DBMS container
+4. create and start DBMS container
 
-```bash
+```sh
 docker-compose up -d
 ```
 
-5. Create database inside container
+5. create database inside container
 
 ```sh
 # replace [PASSWORD] with database password
 docker exec -it mysql mysql -u root -p[PASSWORD] -e "create database events;"
 ```
 
-## Start app
-
-```bash
-# development mode
+6. start app
+   
+```sh
 npm run start
-
-# watch mode
-npm run start:dev
-
-# production mode
-npm run start:prod
 ```
 
-## Run tests
+7. run unit tests
 
-```bash
-# unit tests
+```sh
 npm run test
-
-# e2e tests
-npm run test:e2e
-
-# test coverage
-npm run test:cov
 ```
 
-## Tear down
-```bash
+8. run integration tests
+
+```sh
+npm run test:e2e
+```
+
+9. tear down
+```sh
 docker-compose down
 ```
