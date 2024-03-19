@@ -22,9 +22,9 @@ GET http://localhost:3000/api/event/by/date/
 GET http://localhost:3000/api/event/by/week/
 ```
 
-## set up
+## usage
 
-1. install [Docker Desktop](https://www.docker.com/products/docker-desktop)
+1. install [docker desktop](https://www.docker.com/products/docker-desktop)
 
 2. run below to install required dependencies
 
