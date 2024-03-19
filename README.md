@@ -1,6 +1,7 @@
 # event scheduler api
 
 API which enables users to provide event date, time, and notes for scheduling purpose. Afterwards, users can search for events taking place on particular days or within specific weeks. Scheduling of events that recur every day, week, month, or year is also supported by the API
+
 ## API endpoints
 
 1. Create an event
@@ -9,54 +10,16 @@ API which enables users to provide event date, time, and notes for scheduling pu
 POST http://localhost:3000/api/event/
 ```
 
-#### Request body
-
-```json
-{
-  "date": "number",
-  "month": "number",
-  "year": "number",
-  "start_hour": "number",
-  "start_minute": "number",
-  "end_hour": "number",
-  "end_minute": "number",
-  "notes": "string",
-  "repeat_interval": "string"
-}
-```
-
-**remarks** : event repeat interval is optional with following possible values : daily, weekly, monthly and yearly
-
 2. Get events for specified date
 
 ```http
 GET http://localhost:3000/api/event/by/date/
 ```
 
-#### Request body
-
-```json
-{
-  "date": "number",
-  "month": "number",
-  "year": "number"
-}
-```
-
 3. Get events for specified week
 
 ```http
 GET http://localhost:3000/api/event/by/week/
-```
-
-#### Request body
-
-```json
-{
-  "date": "number",
-  "month": "number",
-  "year": "number"
-}
 ```
 
 ## Set up
@@ -114,4 +77,9 @@ npm run test:e2e
 
 # test coverage
 npm run test:cov
+```
+
+## Tear down
+```bash
+docker-compose down
 ```
