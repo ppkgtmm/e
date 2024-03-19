@@ -21,11 +21,11 @@ POST http://localhost:3000/api/event/
   "end_hour": "number",
   "end_minute": "number",
   "notes": "string",
-  "repeat_interval": "daily / weekly / monthly / yearly"
+  "repeat_interval": "string"
 }
 ```
 
-remark : event repeat interval is optional
+remarks : event repeat interval is optional with following possible values : daily, weekly, monthly and yearly
 
 2. Get events for a date
 
