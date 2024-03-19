@@ -66,8 +66,7 @@ GET http://localhost:3000/api/event/by/week/
 2. Run below to install required dependencies
 
 ```bash
-# install required dependencies
-$ npm install
+npm install
 ```
 
 3. At project root directory, create file .env then paste the content below to the file to help connect to database
@@ -78,42 +77,41 @@ PASSWORD=12345
 HOST=localhost
 ```
 
-4. Set up database
+4. Create and start DBMS container
 
 ```bash
-# create and run database container
-$ docker-compose up -d
+docker-compose up -d
 ```
 
 5. Create database inside container
 
 ```sh
 # replace [PASSWORD] with database password
-$ docker exec -it mysql mysql -u root -p[PASSWORD] -e "create database events;"
+docker exec -it mysql mysql -u root -p[PASSWORD] -e "create database events;"
 ```
 
 ## Start app
 
 ```bash
-# development
-$ npm run start
+# development mode
+npm run start
 
 # watch mode
-$ npm run start:dev
+npm run start:dev
 
 # production mode
-$ npm run start:prod
+npm run start:prod
 ```
 
 ## Run tests
 
 ```bash
 # unit tests
-$ npm run test
+npm run test
 
 # e2e tests
-$ npm run test:e2e
+npm run test:e2e
 
 # test coverage
-$ npm run test:cov
+npm run test:cov
 ```
