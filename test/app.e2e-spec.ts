@@ -693,7 +693,7 @@ describe('Events (e2e)', () => {
 
   it('should fetch event on the date', () => {
     return request(app.getHttpServer())
-      .get('/api/event/by/date/')
+      .get('/api/event/date/')
       .send({
         date: 7,
         month: 1,
@@ -713,7 +713,7 @@ describe('Events (e2e)', () => {
 
   it('should fetch event on the date', () => {
     return request(app.getHttpServer())
-      .get('/api/event/by/date/')
+      .get('/api/event/date/')
       .send({
         date: 29,
         month: 2,
@@ -728,7 +728,7 @@ describe('Events (e2e)', () => {
 
   it('should fetch event during the week', () => {
     return request(app.getHttpServer())
-      .get('/api/event/by/week/')
+      .get('/api/event/week/')
       .send({
         date: 25,
         month: 2,
@@ -743,7 +743,7 @@ describe('Events (e2e)', () => {
 
   it('should fetch event during the week', () => {
     return request(app.getHttpServer())
-      .get('/api/event/by/week/')
+      .get('/api/event/week/')
       .send({
         date: 23,
         month: 2,
@@ -758,7 +758,7 @@ describe('Events (e2e)', () => {
 
   it('should fetch event during the week', () => {
     return request(app.getHttpServer())
-      .get('/api/event/by/week/')
+      .get('/api/event/week/')
       .send({
         date: 28,
         month: 2,
@@ -773,7 +773,7 @@ describe('Events (e2e)', () => {
 
   it('should fetch event during the week', () => {
     return request(app.getHttpServer())
-      .get('/api/event/by/week/')
+      .get('/api/event/week/')
       .send({
         date: 22,
         month: 2,
