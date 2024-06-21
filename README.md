@@ -1,6 +1,6 @@
 # event scheduler
 
-backend API for event scheduling and event search on particular days or within specific weeks
+backend API for event scheduling and event search on particular day or week
 
 ## endpoints
 
