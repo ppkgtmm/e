@@ -12,17 +12,17 @@ backend API for event scheduling and event search on particular day or week
 - install [docker desktop](https://www.docker.com/products/docker-desktop)
 - install required dependencies with following command
 
-  ```sh
-  npm install
-  ```
+```sh
+npm install
+```
 
 - in project directory, create a file .env with following content
 
-  ```sh
-  USERNAME=root
-  PASSWORD=12345
-  HOST=localhost
-  ```
+```sh
+USERNAME=root
+PASSWORD=12345
+HOST=localhost
+```
 
 - create and start mysql container
 
@@ -32,36 +32,36 @@ backend API for event scheduling and event search on particular day or week
 
 - create database inside container
 
-  ```sh
-  # replace [PASSWORD] with database password
-  docker exec -it mysql mysql -u root -p[PASSWORD] -e "create database events;"
-  ```
+```sh
+# replace [PASSWORD] with database password
+docker exec -it mysql mysql -u root -p[PASSWORD] -e "create database events;"
+```
 
 - start the backend
 
-  ```sh
-  npm run start
-  ```
+```sh
+npm run start
+```
 
 ## testing
 
 - run unit tests
 
-  ```sh
-  npm run test
-  ```
+```sh
+npm run test
+```
 
 - run integration tests
 
-  ```sh
-  npm run test:e2e
-  ```
+```sh
+npm run test:e2e
+```
 
 # tear down
 
 - press `CTRL + C` to exit API server
 - run the following to terminate mysql container
 
-  ```sh
-  docker-compose down -v
-  ```
+```sh
+docker-compose down -v
+```
