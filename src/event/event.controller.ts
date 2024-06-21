@@ -4,19 +4,19 @@ import { EventService } from './event.service';
 
 @Controller('event')
 export class EventController {
-  constructor(private readonly eventServive: EventService) {}
+  constructor(private readonly eventService: EventService) {}
   @Post()
   async addEvent(@Body() body: EventDTO) {
-    return await this.eventServive.createEvent(body);
+    return await this.eventService.createEvent(body);
   }
 
   @Get('by/date')
   async getEventsByDate(@Body() body: GetEventDTO) {
-    return await this.eventServive.getEventsByDate(body);
+    return await this.eventService.getEventsByDate(body);
   }
 
   @Get('by/week')
   async getEventsByMonth(@Body() body: GetEventDTO) {
-    return await this.eventServive.getEventsByWeek(body);
+    return await this.eventService.getEventsByWeek(body);
   }
 }
