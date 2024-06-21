@@ -1,8 +1,8 @@
-<!--- # event scheduler api
+# event scheduler
 
-API which enables users to provide event date, time, and notes for scheduling purpose. Afterwards, users can search for events taking place on particular days or within specific weeks. Scheduling of events that recur every day, week, month, or year is also supported by the API -->
+backend API for event scheduling and event search on particular days or within specific weeks
 
-# endpoints
+## endpoints
 
 - create an event
 
@@ -13,29 +13,29 @@ POST http://localhost:3000/api/event/
 - get events for specified date
 
 ```http
-GET http://localhost:3000/api/event/by/date/
+GET http://localhost:3000/api/event/date/
 ```
 
 - get events for specified week
 
 ```http
-GET http://localhost:3000/api/event/by/week/
+GET http://localhost:3000/api/event/week/
 ```
 
-# set up
+## getting started
 
 - install [docker desktop](https://www.docker.com/products/docker-desktop)
-- run below to install required dependencies
+- install required dependencies with following command
 ```sh
 npm install
 ```
-- at project root directory, create file .env then paste the content below to the file to help connect to database
+- in project directory, create a file .env with following content
 ```sh
 USERNAME=root
 PASSWORD=12345
 HOST=localhost
 ```
-- create and start DBMS container
+- create and start mysql container
 ```sh
 docker-compose up -d
 ```
@@ -44,12 +44,12 @@ docker-compose up -d
 # replace [PASSWORD] with database password
 docker exec -it mysql mysql -u root -p[PASSWORD] -e "create database events;"
 ```
-- start app
+- start the backend
 ```sh
 npm run start
 ```
 
-# testing
+## testing
 - run unit tests
 ```sh
 npm run test
@@ -60,8 +60,8 @@ npm run test:e2e
 ```
 
 # tear down
-- press CTRL + C to exit API server
-- run below to terminate DBMS
+- press `CTRL + C` to exit API server
+- run the following to terminate mysql container
 ```sh
-docker-compose down
+docker-compose down -v
 ```
