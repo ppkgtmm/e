@@ -6,7 +6,7 @@ backend API for event scheduling and event search on particular day or week
 
 endpoint url                                | function
 ------------------------------------------- | ----------------------------
-`POST <http://localhost:3000/api/event/>`   | create an event
+`POST http://localhost:3000/api/event/`   | create an event
 `GET http://localhost:3000/api/event/date/` | get scheduled events by date
 `GET http://localhost:3000/api/event/week/` | get scheduled events by week
 
