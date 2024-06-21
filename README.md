@@ -3,12 +3,9 @@
 backend API for event scheduling and event search on particular day or week
 
 ## endpoints
-
-endpoint url        | function
-------------------- | ----------------------------
-POST api/event/     | create an event
-GET api/event/date/ | get scheduled events by date
-GET api/event/week/ | get scheduled events by week
+- create an event : POST api/event/ 
+- get scheduled events by date : GET api/event/date/
+- get scheduled events by week : GET api/event/week/
 
 ## getting started
 
