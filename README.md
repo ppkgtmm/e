@@ -26,9 +26,9 @@ HOST=localhost
 
 - create and start mysql container
 
-  ```sh
-  docker-compose up -d
-  ```
+```sh
+docker-compose up -d
+```
 
 - create database inside container
 
