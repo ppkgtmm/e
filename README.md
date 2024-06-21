@@ -57,7 +57,7 @@ npm run test
 npm run test:e2e
 ```
 
-# tear down
+## tear down
 
 - press `CTRL + C` to exit API server
 - run the following to terminate mysql container
